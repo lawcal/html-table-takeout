@@ -88,7 +88,7 @@ class _HtmlTableParser(HTMLParser):
         match: str | re.Pattern | None = None,
         attrs: dict[str, str | None] | None = None,
         displayed_only: bool = True,
-        extract_links: Literal[None, 'thead', 'tbody', 'tfoot', 'all'] = None,
+        extract_links: Literal[None, 'thead', 'tbody', 'tfoot', 'all'] = 'all',
     ) -> None:
         HTMLParser.__init__(self, convert_charrefs=True)
         self.id = 0
@@ -286,7 +286,7 @@ def parse_html(
     attrs: dict[str, str | None] | None = None,
     encoding: str = 'utf-8',
     displayed_only: bool = True,
-    extract_links: Literal[None, 'thead', 'tbody', 'tfoot', 'all'] = None,
+    extract_links: Literal[None, 'thead', 'tbody', 'tfoot', 'all'] = 'all',
     request_headers: dict[str, str] | None = None
 ) -> list[Table]:
     r"""
