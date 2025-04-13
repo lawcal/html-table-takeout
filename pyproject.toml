@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "html-table-takeout"
-version = "1.0.0"
+version = "1.0.1"
 description = "HTML table parser that supports rowspan, colspan, links and nested tables. Fast, lightweight with no external dependencies."
 authors = [
     {name = "Calvin Law"}
