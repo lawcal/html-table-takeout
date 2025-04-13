@@ -1645,3 +1645,45 @@ def test_file_does_not_exist():
 
     with pytest.raises(IOError, match='Failed to read file'):
         parse_html(file_path)
+
+
+#########################################################
+# test url input
+#########################################################
+
+
+def test_url_input():
+    url = 'https://raw.githubusercontent.com/lawcal/html-table-takeout/6ed8fde22d734ea0950cd155a218fb4582d1ad19/tests/test_file_input.html' # pylint: disable=line-too-long
+    expected = [
+        Table(id=0, rows=[
+            TRow(group='tbody', cells=[
+                TCell(header=False, elements=[
+                    TText(text='1'),
+                ]),
+                TCell(header=False, elements=[
+                    TText(text='2'),
+                ]),
+            ]),
+            TRow(group='tbody', cells=[
+                TCell(header=False, elements=[
+                    TText(text='3'),
+                ]),
+                TCell(header=False, elements=[
+                    TText(text='4'),
+                ]),
+            ]),
+        ]),
+    ]
+
+    actual = parse_html(url)
+    assert len(actual) == len(expected)
+    for idx, table in enumerate(actual):
+        assert table == expected[idx]
+
+
+def test_url_resource_does_not_exist():
+
+    url = 'https://raw.githubusercontent.com/lawcal/html-table-takeout/6ed8fde22d734ea0950cd155a218fb4582d1ad19/tests/test_file_input_does_not_exist.html' # pylint: disable=line-too-long
+
+    with pytest.raises(IOError, match='Failed to make HTTP request'):
+        parse_html(url)
