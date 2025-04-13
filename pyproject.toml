@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "html-table-takeout"
+version = "1.0.0"
+description = "HTML table parser that supports rowspan, colspan, links and nested tables. Fast, lightweight with no external dependencies."
+authors = [
+    {name = "Calvin Law"}
+]
+maintainers = [
+    {name = "Calvin Law"}
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["html", "table", "parse", "scrape"]
+
+[project.urls]
+Homepage = "https://github.com/lawcal/html-table-takeout"
+
+[tool.setuptools]
+packages = ["html_table_takeout"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
