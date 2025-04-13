@@ -1,8 +1,14 @@
 # HTML Table Takeout
 
+[![Test](https://github.com/lawcal/html-table-takeout/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/lawcal/html-table-takeout/actions/workflows/test.yml)
+
+<img src="images/html_table_takeout_logo.png" alt="HTML Table Takeout project logo" width="300">
+
 A fast, lightweight HTML table parser that supports rowspan, colspan, links and nested tables. No external dependencies are needed.
 
 The input may be text, a URL or local file `Path`.
+
+<sup><sub>HTML5 logo by <a href='https://www.w3.org/'>W3C</a>.</sub></sup>
 
 ## Quick Start
 
