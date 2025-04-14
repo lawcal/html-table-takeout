@@ -1473,6 +1473,40 @@ def test_displayed_only(_desc, html_text, displayed_only, expected):
                 ]),
             ]),
         ]),
+        ('it returns all text within link tags even when there are other elements',"""
+<table>
+<thead>
+    <tr><td>Link in <a href='#1'><span>header</span></a></td></tr>
+</thead>
+    <tr><td>Link in <a href='#2'>bo<span>dy</span></a></td></tr>
+<tfoot>
+    <tr><td>Link in <a href='#3'><span>foo</span>ter</a></td></tr>
+</tfoot>
+</table>
+        """,
+        'all',
+        [
+            Table(id=0, rows=[
+                TRow(group='thead', cells=[
+                    TCell(header=False, elements=[
+                        TText(text='Link in '),
+                        TLink(href='#1', text='header'),
+                    ]),
+                ]),
+                TRow(group='tbody', cells=[
+                    TCell(header=False, elements=[
+                        TText(text='Link in '),
+                        TLink(href='#2', text='body'),
+                    ]),
+                ]),
+                TRow(group='tfoot', cells=[
+                    TCell(header=False, elements=[
+                        TText(text='Link in '),
+                        TLink(href='#3', text='footer'),
+                    ]),
+                ]),
+            ]),
+        ]),
     ]
 )
 def test_extract_links(_desc, html_text, extract_links, expected):

@@ -255,7 +255,7 @@ class _HtmlTableParser(HTMLParser):
         if ctx.in_a: # most specific condition so must be checked first
             cell = ctx.table.rows[-1].cells[-1]
             element = cell.elements[-1]
-            element.text = data
+            element.text += data
 
         elif ctx.in_td:
             cell = ctx.table.rows[-1].cells[-1]
