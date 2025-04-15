@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-from .types import Table, TRow, TCell, TLink, TRef, TBreak, TText
+from .types import Table, TRow, TCell, TLink, TRef, TText
 
 
 def _found_match(s: str, match: str | re.Pattern | None) -> bool:
@@ -180,7 +180,13 @@ class _HtmlTableParser(HTMLParser):
 
         elif tag == 'br' and ctx.in_td:
             cell = ctx.table.rows[-1].cells[-1]
-            cell.elements.append(TBreak(text='\n'))
+            if not cell.elements:
+                cell.elements.append(TText())
+            element = cell.elements[-1]
+            if ctx.in_a or type(element) is TText: # pylint: disable=unidiomatic-typecheck
+                element.text += '\n'
+            else:
+                cell.elements.append(TText(text='\n'))
 
 
     def handle_endtag(self, tag: str):
@@ -252,14 +258,16 @@ class _HtmlTableParser(HTMLParser):
         if ctx is None:
             return
 
-        if ctx.in_a: # most specific condition so must be checked first
+        if ctx.in_td:
+            text = data.replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ') # remove line breaks with space
             cell = ctx.table.rows[-1].cells[-1]
+            if not cell.elements:
+                cell.elements.append(TText())
             element = cell.elements[-1]
-            element.text += data
-
-        elif ctx.in_td:
-            cell = ctx.table.rows[-1].cells[-1]
-            cell.elements.append(TText(text=data))
+            if ctx.in_a or type(element) is TText: # pylint: disable=unidiomatic-typecheck
+                element.text += text
+            else:
+                cell.elements.append(TText(text=text))
 
 
 def _parse_html_text(

@@ -1,7 +1,7 @@
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,too-many-lines
 import pytest
 
-from html_table_takeout import Table, TRow, TCell, TLink, TRef, TBreak, TText
+from html_table_takeout import Table, TRow, TCell, TLink, TRef, TText
 
 
 #########################################################
@@ -84,8 +84,7 @@ from html_table_takeout import Table, TRow, TCell, TLink, TRef, TBreak, TText
             Table(id=0, rows=[
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='1'),
-                        TBreak(),
+                        TText(text='1\n'),
                     ]),
                     TCell(header=False, elements=[
                         TText(text='2'),
@@ -93,8 +92,7 @@ from html_table_takeout import Table, TRow, TCell, TLink, TRef, TBreak, TText
                 ]),
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TBreak(),
-                        TText(text='3'),
+                        TText(text='\n3'),
                     ]),
                     TCell(header=False, elements=[
                         TText(text='4'),
@@ -268,7 +266,7 @@ def test_table_nested_to_html():
     table_one = Table(id=0, rows=[
         TRow(group='tbody', cells=[
             TCell(header=False, elements=[
-                TText(text='3'),
+                TText(text='3\n4\n5'),
             ]),
         ]),
     ])
@@ -292,7 +290,7 @@ def test_table_nested_to_html():
 <table data-table-id='2'>
 <tbody>
     <tr>
-        <td>1<table data-table-id='1'><tbody><tr><td>2<table data-table-id='0'><tbody><tr><td>3</td></tr></tbody></table></td></tr></tbody></table></td>
+        <td>1<table data-table-id='1'><tbody><tr><td>2<table data-table-id='0'><tbody><tr><td>3<br/>4<br/>5</td></tr></tbody></table></td></tr></tbody></table></td>
     </tr>
 </tbody>
 </table>"""
@@ -352,8 +350,7 @@ def test_table_nested_to_html():
             Table(id=0, rows=[
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='1'),
-                        TBreak(),
+                        TText(text='1\n'),
                     ]),
                     TCell(header=False, elements=[
                         TText(text='2'),
@@ -361,8 +358,7 @@ def test_table_nested_to_html():
                 ]),
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TBreak(),
-                        TText(text='3'),
+                        TText(text='\n3'),
                     ]),
                     TCell(header=False, elements=[
                         TText(text='4'),
@@ -459,8 +455,7 @@ def test_table_nested_to_html():
                 ]),
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='"We want...a SHRUBBERY!'),
-                        TBreak(),
+                        TText(text='"We want...a SHRUBBERY!\n'),
                     ]),
                     TCell(header=False, elements=[
                         TText(text='One that\'s nice. And not too expensive."'),
@@ -479,18 +474,12 @@ def test_table_nested_to_csv():
     table_one = Table(id=0, rows=[
         TRow(group='tbody', cells=[
             TCell(header=False, elements=[
-                TBreak(),
-                TText(text='3'),
-                TBreak(),
-                TBreak(),
+                TText(text='\n3\n\n'),
                 TText(text='4'),
             ]),
             TCell(header=False, elements=[
-                TText(text='5'),
-                TBreak(),
-                TBreak(),
-                TText(text='6'),
-                TBreak(),
+                TText(text='5\n\n'),
+                TText(text='6\n'),
             ]),
         ]),
         TRow(group='tbody', cells=[
@@ -498,7 +487,7 @@ def test_table_nested_to_csv():
                 TText(text='7'),
             ]),
             TCell(header=False, elements=[
-                TText(text='8'),
+                TText(text='8\n\n'),
             ]),
         ]),
     ])
@@ -513,11 +502,11 @@ def test_table_nested_to_csv():
     table_three = Table(id=2, rows=[
         TRow(group='tbody', cells=[
             TCell(header=False, elements=[
-                TText(text='1'),
+                TText(text='1\n'),
                 TRef(table=table_two),
             ]),
             TCell(header=False, elements=[
-                TText(text='9'),
+                TText(text='9\n'),
             ]),
         ]),
         TRow(group='tbody', cells=[
@@ -526,7 +515,7 @@ def test_table_nested_to_csv():
             ]),
         ]),
     ])
-    expected = '123 4 5 6 7 8,9\n0\n'
+    expected = '"1\n23\n\n4 5\n\n6\n7 8",9\n0\n'
     assert table_three.to_csv() == expected
 
 
@@ -552,8 +541,7 @@ def test_table_nested_to_csv():
             Table(id=0, rows=[
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='   1   '),
-                        TBreak(),
+                        TText(text='   1   \n'),
                     ]),
                     TCell(header=False, elements=[
                         TText(text='2   '),
@@ -561,10 +549,7 @@ def test_table_nested_to_csv():
                 ]),
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TBreak(),
-                        TText(text='3'),
-                        TBreak(),
-                        TBreak(),
+                        TText(text='\n3\n\n'),
                         TText(text='4'),
                     ]),
                     TCell(header=False, elements=[
@@ -572,7 +557,7 @@ def test_table_nested_to_csv():
                     ]),
                 ]),
             ]),
-            '1 2\n3 4 5'
+            '1 2\n3\n\n4 5'
         ),
         ('it returns text portion of links',
             Table(id=0, rows=[
@@ -618,18 +603,12 @@ def test_table_nested_inner_text():
     table_one = Table(id=0, rows=[
         TRow(group='tbody', cells=[
             TCell(header=False, elements=[
-                TBreak(),
-                TText(text='3'),
-                TBreak(),
-                TBreak(),
+                TText(text='\n3\n\n'),
                 TText(text='4'),
             ]),
             TCell(header=False, elements=[
-                TText(text='5'),
-                TBreak(),
-                TBreak(),
-                TText(text='6'),
-                TBreak(),
+                TText(text='5\n\n'),
+                TText(text='6\n'),
             ]),
         ]),
         TRow(group='tbody', cells=[
@@ -637,7 +616,7 @@ def test_table_nested_inner_text():
                 TText(text='7'),
             ]),
             TCell(header=False, elements=[
-                TText(text='8'),
+                TText(text='8\n\n'),
             ]),
         ]),
     ])
@@ -652,11 +631,11 @@ def test_table_nested_inner_text():
     table_three = Table(id=2, rows=[
         TRow(group='tbody', cells=[
             TCell(header=False, elements=[
-                TText(text='1'),
+                TText(text='1\n'),
                 TRef(table=table_two),
             ]),
             TCell(header=False, elements=[
-                TText(text='9'),
+                TText(text='9\n'),
             ]),
         ]),
         TRow(group='tbody', cells=[
@@ -665,7 +644,7 @@ def test_table_nested_inner_text():
             ]),
         ]),
     ])
-    expected = '123 4 5 6 7 8 9\n0'
+    expected = '1\n23\n\n4 5\n\n6\n7 8 9\n0'
     assert table_three.inner_text() == expected
 
 

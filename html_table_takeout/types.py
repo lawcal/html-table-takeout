@@ -6,10 +6,12 @@ import re
 from typing import Literal
 
 
-_RE_WHITESPACE = re.compile(r'[\r\n]+|\s{2,}')
+_RE_WHITESPACE_NEWLINE = re.compile(r'[\r\n]+|\s{2,}')
+_RE_WHITESPACE = re.compile(r'[^\S\r\n]') # whitespace but not newline
 
 
-def _remove_whitespace(s: str, regex: re.Pattern = _RE_WHITESPACE) -> str:
+def _collapse_whitespace(s: str, include_newline: bool = True) -> str:
+    regex = _RE_WHITESPACE_NEWLINE if include_newline else _RE_WHITESPACE
     return regex.sub(' ', s.strip())
 
 
@@ -24,18 +26,10 @@ class TText:
     text: str = ''
 
     def to_html(self) -> str:
-        return html.escape(self.text)
+        return html.escape(self.text).replace('\n', '<br/>')
 
     def inner_text(self) -> str:
         return self.text
-
-
-@dataclass
-class TBreak(TText):
-    text: Literal['\n'] = '\n'
-
-    def to_html(self) -> str:
-        return '<br/>'
 
 
 @dataclass
@@ -44,9 +38,8 @@ class TLink(TText):
 
     def to_html(self) -> str:
         href = html.escape(self.href)
-        text = html.escape(self.text)
         href_attr = f" href='{href}'" if href else ''
-        return f"<a{href_attr}>{text}</a>"
+        return f"<a{href_attr}>{super().to_html()}</a>"
 
 
 @dataclass
@@ -57,11 +50,11 @@ class TCell:
     def to_html(self, indent=0) -> str:
         space, _ = _calc_space_newline(indent)
         tag = 'th' if self.header else 'td'
-        html_content = _remove_whitespace(''.join(e.to_html() for e in self.elements))
+        html_content = _collapse_whitespace(''.join(e.to_html() for e in self.elements))
         return f"{space}<{tag}>{html_content}</{tag}>"
 
     def inner_text(self) -> str:
-        return _remove_whitespace(''.join(e.inner_text() for e in self.elements))
+        return _collapse_whitespace(''.join(e.inner_text() for e in self.elements), False)
 
 
 @dataclass

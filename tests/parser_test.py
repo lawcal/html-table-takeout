@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 import pytest
 
-from html_table_takeout import Table, TRow, TCell, TLink, TRef, TBreak, TText, parse_html
+from html_table_takeout import Table, TRow, TCell, TLink, TRef, TText, parse_html
 
 
 #########################################################
@@ -82,12 +82,12 @@ def append_blank_rows(table: Table, num_rows: int) -> Table:
         ('it parses line breaks', """
 <table>
     <tr>
-        <td>1<br/></td>
-        <td>2</td>
+        <td>1<br/><br/></td>
+        <td>2<br/>3<br/>4</td>
     </tr>
     <tr>
-        <td><br>3</td>
-        <td>4</td>
+        <td><br/>5<br/>6<br/></td>
+        <td><br><br>7</td>
     </tr>
 </table>
          """,
@@ -95,20 +95,54 @@ def append_blank_rows(table: Table, num_rows: int) -> Table:
             Table(id=0, rows=[
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='1'),
-                        TBreak(),
+                        TText(text='1\n\n'),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='2'),
+                        TText(text='2\n3\n4'),
                     ]),
                 ]),
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TBreak(),
-                        TText(text='3'),
+                        TText(text='\n5\n6\n'),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='4'),
+                        TText(text='\n\n7'),
+                    ]),
+                ]),
+            ]),
+        ]),
+        ('it parses line breaks in links', """
+<table>
+    <tr>
+        <td><a>1<br/><br/></a></td>
+        <td><br/><a>3<br/>4</a><br/></td>
+    </tr>
+    <tr>
+        <td><a><br/>5<br/>6</a><br/></td>
+        <td><br/>7<br/>8<a><br/></a></td>
+    </tr>
+</table>
+         """,
+        [
+            Table(id=0, rows=[
+                TRow(group='tbody', cells=[
+                    TCell(header=False, elements=[
+                        TLink(text='1\n\n'),
+                    ]),
+                    TCell(header=False, elements=[
+                        TText(text='\n'),
+                        TLink(text='3\n4'),
+                        TText(text='\n'),
+                    ]),
+                ]),
+                TRow(group='tbody', cells=[
+                    TCell(header=False, elements=[
+                        TLink(text='\n5\n6'),
+                        TText(text='\n'),
+                    ]),
+                    TCell(header=False, elements=[
+                        TText(text='\n7\n8'),
+                        TLink(text='\n'),
                     ]),
                 ]),
             ]),
@@ -246,18 +280,18 @@ def append_blank_rows(table: Table, num_rows: int) -> Table:
             Table(id=0, rows=[
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='1\n'),
+                        TText(text='1 '),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='2\n'),
+                        TText(text='2 '),
                     ]),
                 ]),
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='3\n'),
+                        TText(text='3 '),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='4\n'),
+                        TText(text='4 '),
                     ]),
                 ]),
             ]),
@@ -283,26 +317,26 @@ def append_blank_rows(table: Table, num_rows: int) -> Table:
             Table(id=0, rows=[
                 TRow(group='thead', cells=[
                     TCell(header=False, elements=[
-                        TText(text='1\n'),
+                        TText(text='1 '),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='2\n'),
+                        TText(text='2 '),
                     ]),
                 ]),
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='3\n'),
+                        TText(text='3 '),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='4\n'),
+                        TText(text='4 '),
                     ]),
                 ]),
                 TRow(group='tfoot', cells=[
                     TCell(header=False, elements=[
-                        TText(text='5\n'),
+                        TText(text='5 '),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='6\n'),
+                        TText(text='6 '),
                     ]),
                 ]),
             ]),
@@ -343,18 +377,10 @@ def test_structure_nested():
     table_one = Table(id=0, rows=[
         TRow(group='tbody', cells=[
             TCell(header=False, elements=[
-                TBreak(),
-                TText(text='3'),
-                TBreak(),
-                TBreak(),
-                TText(text='4'),
+                TText(text='\n3\n\n4'),
             ]),
             TCell(header=False, elements=[
-                TText(text='5'),
-                TBreak(),
-                TBreak(),
-                TText(text='6'),
-                TBreak(),
+                TText(text='5\n\n6\n'),
             ]),
         ]),
         TRow(group='tbody', cells=[
@@ -699,24 +725,24 @@ def test_structure_nested():
             Table(id=0, rows=[
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='1\n'),
+                        TText(text='1 '),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='2\n'),
+                        TText(text='2 '),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='2\n'),
+                        TText(text='2 '),
                     ]),
                 ]),
                 TRow(group='tbody', cells=[
                     TCell(header=False, elements=[
-                        TText(text='1\n'),
+                        TText(text='1 '),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='2\n'),
+                        TText(text='2 '),
                     ]),
                     TCell(header=False, elements=[
-                        TText(text='2\n'),
+                        TText(text='2 '),
                     ]),
                 ]),
             ]),
@@ -1476,7 +1502,7 @@ def test_displayed_only(_desc, html_text, displayed_only, expected):
         ('it returns all text within link tags when other elements inside link',"""
 <table>
 <thead>
-    <tr><td>Some <span>header</span> text</td></tr>
+    <tr><td><a href='#1'>Some</a> <span>header</span> text</td></tr>
 </thead>
     <tr><td>Link in <a href='#2'>the <span>[</span>body<span>]</span>!</a></tr>
 <tfoot>
@@ -1489,9 +1515,8 @@ def test_displayed_only(_desc, html_text, displayed_only, expected):
             Table(id=0, rows=[
                 TRow(group='thead', cells=[
                     TCell(header=False, elements=[
-                        TText(text='Some '),
-                        TText(text='header'),
-                        TText(text=' text'),
+                        TLink(href='#1', text='Some'),
+                        TText(text=' header text'),
                     ]),
                 ]),
                 TRow(group='tbody', cells=[
@@ -1502,8 +1527,7 @@ def test_displayed_only(_desc, html_text, displayed_only, expected):
                 ]),
                 TRow(group='tfoot', cells=[
                     TCell(header=False, elements=[
-                        TText(text='Link'),
-                        TText(text=' in '),
+                        TText(text='Link in '),
                         TLink(href='#3', text='footer'),
                         TText(text='!'),
                     ]),
