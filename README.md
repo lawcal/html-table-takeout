@@ -69,7 +69,7 @@ print(tables[0].to_html(indent=4))
 The core `parse_html()` function returns a list of zero or more top-level `Table`. A `Table` is guaranteed to have this structure:
 - **rows**: List of one or more `TRow`
   - **cells**: List of zero or more `TCell` resulting from rowspan and colspan expansion
-    - **elements**: List of zero or more `TText`, `TLink`, `TBreak`, `TRef`
+    - **elements**: List of zero or more `TText`, `TLink`, `TRef`
 
 | Type     | Description                                      |
 | -------- | ------------------------------------------------ |
@@ -78,7 +78,6 @@ The core `parse_html()` function returns a list of zero or more top-level `Table
 | `TCell`  | Expanded `<td>` or `<th>` cells from row/colspan |
 | `TText`  | HTML-decoded text inside `<td>` or `<th>`        |
 | `TLink`  | Equal to each `<a>` inside `<td>` or `<th>`      |
-| `TBreak` | Equal to `<br/>`                                 |
 | `TRef`   | Reference to the child `Table`                   |
 
 All tables are guaranteed to have at least one `TRow` containing one `TCell`.
