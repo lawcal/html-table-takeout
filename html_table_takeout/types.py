@@ -47,6 +47,10 @@ class TCell:
     header: bool = False
     elements: list[TText] = field(default_factory=list)
 
+    def __iter__(self):
+        for element in self.elements:
+            yield element
+
     def to_html(self, indent=0) -> str:
         space, _ = _calc_space_newline(indent)
         tag = 'th' if self.header else 'td'
@@ -61,6 +65,10 @@ class TCell:
 class TRow:
     group: Literal['thead', 'tbody', 'tfoot'] = 'tbody'
     cells: list[TCell] = field(default_factory=list)
+
+    def __iter__(self):
+        for cell in self.cells:
+            yield cell
 
     def to_html(self, indent=0) -> str:
         space, newline = _calc_space_newline(indent)
@@ -99,6 +107,9 @@ class Table:
     id: int = -1
     rows: list[TRow] = field(default_factory=list)
 
+    def __iter__(self):
+        for row in self.rows:
+            yield row
 
     def to_html(self, indent=2) -> str:
         """
