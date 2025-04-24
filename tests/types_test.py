@@ -983,6 +983,35 @@ def test_table_nested_rectangify():
 
 
 #########################################################
+# Table __iter__
+#########################################################
+
+
+@pytest.mark.parametrize(
+    '_desc,table,expected',
+    [
+        ('it iterates through table rows',
+            Table(rows=[
+                TRow(cells=[TCell(elements=[TText('a')])]),
+                TRow(cells=[TCell(elements=[TText('b')])]),
+                TRow(cells=[TCell(elements=[TText('c')])]),
+            ]),
+            [
+                TRow(cells=[TCell(elements=[TText('a')])]),
+                TRow(cells=[TCell(elements=[TText('b')])]),
+                TRow(cells=[TCell(elements=[TText('c')])]),
+            ]
+        ),
+    ]
+)
+def test_table_iter(_desc, table: Table, expected):
+    for idx, row in enumerate(table):
+        assert row == expected[idx]
+    for idx, row in enumerate(table.rows):
+        assert row == expected[idx]
+
+
+#########################################################
 # TRow
 #########################################################
 
@@ -1065,3 +1094,61 @@ def test_trow_nested_contains_all_th():
 )
 def test_trow_is_header_like(_desc, row: TRow, expected):
     assert row.is_header_like() == expected
+
+
+#########################################################
+# TRow __iter__
+#########################################################
+
+
+@pytest.mark.parametrize(
+    '_desc,row,expected',
+    [
+        ('it iterates through row cells',
+            TRow(cells=[
+                TCell(elements=[TText('a')]),
+                TCell(elements=[TText('b')]),
+                TCell(elements=[TText('c')]),
+            ]),
+            [
+                TCell(elements=[TText('a')]),
+                TCell(elements=[TText('b')]),
+                TCell(elements=[TText('c')]),
+            ]
+        ),
+    ]
+)
+def test_row_iter(_desc, row: TRow, expected):
+    for idx, cell in enumerate(row):
+        assert cell == expected[idx]
+    for idx, cell in enumerate(row.cells):
+        assert cell == expected[idx]
+
+
+#########################################################
+# TCell __iter__
+#########################################################
+
+
+@pytest.mark.parametrize(
+    '_desc,cell,expected',
+    [
+        ('it iterates through cell elements',
+            TCell(elements=[
+                TText('a'),
+                TText('b'),
+                TText('c'),
+            ]),
+            [
+                TText('a'),
+                TText('b'),
+                TText('c'),
+            ]
+        ),
+    ]
+)
+def test_cell_iter(_desc, cell: TCell, expected):
+    for idx, element in enumerate(cell):
+        assert element == expected[idx]
+    for idx, element in enumerate(cell.elements):
+        assert element == expected[idx]
