@@ -157,8 +157,8 @@ class _HtmlTableParser(HTMLParser):
             cell = TCell(header=tag == 'th')
             # According to spec, rowspan may be zero meaning the cell spans remaining rows in row group:
             # https://html.spec.whatwg.org/multipage/tables.html#attr-tdth-rowspan
-            rowspan = min(max(0, int(attrs.get('rowspan', 1))), 65534) or 65534 # limits according to spec
-            colspan = min(max(1, int(attrs.get('colspan', 1))), 1000) # limits according to spec
+            rowspan = min(max(0, int(attrs.get('rowspan', '').strip() or 1)), 65534) or 65534 # limits from spec
+            colspan = min(max(1, int(attrs.get('colspan', '').strip() or 1)), 1000) # limits from spec
 
             for _ in range(colspan):
                 row.cells.append(cell)
