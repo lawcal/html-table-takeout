@@ -539,7 +539,7 @@ def test_structure_nested():
         ('it handles rowspan and colspan attributes with non-digits', """
 <<table>
     <tr>
-         <td rowspan='2;' colspan=';2'>1</td>
+         <td rowspan='2.0;' colspan=';2'>1</td>
          <td rowspan='value of one'>2</td>
     </tr>
     <tr>

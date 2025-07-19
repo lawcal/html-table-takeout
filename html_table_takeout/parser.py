@@ -22,7 +22,8 @@ def _whitespace_stripped(s: str) -> str:
 
 
 def _parse_span(s: str) -> int:
-    digits = ''.join(c for c in s if c.isdigit())
+    # take integer portion only if decimal
+    digits = ''.join(c for c in s.split('.')[0] if c.isdigit())
     try:
         return int(digits or 1)
     except ValueError:
