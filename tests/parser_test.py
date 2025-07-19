@@ -536,6 +536,58 @@ def test_structure_nested():
                 ]),
             ]),
         ]),
+        ('it handles rowspan and colspan attributes with non-digits', """
+<<table>
+    <tr>
+         <td rowspan='2.0;' colspan=';2'>1</td>
+         <td rowspan='value of one'>2</td>
+    </tr>
+    <tr>
+         <td rowspan=';;2.9;;'>3</td>
+    </tr>
+    <tr>
+         <td rowspan=' ;; 0 ;; '>4</td>
+         <td rowspan='\n0\n'>5</td>
+    </tr>
+</table>
+        """,
+        [
+            Table(id=0, rows=[
+                TRow(group='tbody', cells=[
+                    TCell(header=False, elements=[
+                        TText(text='1'),
+                    ]),
+                    TCell(header=False, elements=[
+                        TText(text='1'),
+                    ]),
+                    TCell(header=False, elements=[
+                        TText(text='2'),
+                    ]),
+                ]),
+                TRow(group='tbody', cells=[
+                    TCell(header=False, elements=[
+                        TText(text='1'),
+                    ]),
+                    TCell(header=False, elements=[
+                        TText(text='1'),
+                    ]),
+                    TCell(header=False, elements=[
+                        TText(text='3'),
+                    ]),
+                ]),
+                TRow(group='tbody', cells=[
+                    TCell(header=False, elements=[
+                        TText(text='4'),
+                    ]),
+                    TCell(header=False, elements=[
+                        TText(text='5'),
+                    ]),
+                    TCell(header=False, elements=[
+                        TText(text='3'),
+                    ]),
+                ]),
+            ]),
+        ]),
         ('it handles rowspan and colspan that covers the whole table', """
 <<table>
     <tr>

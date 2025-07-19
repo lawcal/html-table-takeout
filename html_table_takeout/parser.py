@@ -21,6 +21,16 @@ def _whitespace_stripped(s: str) -> str:
     return ''.join(s.split())
 
 
+def _parse_span(s: str) -> int:
+    # take integer portion only if decimal
+    digits = ''.join(c for c in s.split('.')[0] if c.isdigit())
+    try:
+        return int(digits or 1)
+    except ValueError:
+        pass
+    return 1
+
+
 def _has_style_display_none(attrs: dict[str, str | None]) -> bool:
     styles = attrs.get('style') or ''
     return 'display:none' in _whitespace_stripped(styles)
@@ -155,10 +165,11 @@ class _HtmlTableParser(HTMLParser):
 
             # Append the cell from this <td>, colspan times
             cell = TCell(header=tag == 'th')
+            # Limits for rowspan and colspan are from spec.
             # According to spec, rowspan may be zero meaning the cell spans remaining rows in row group:
             # https://html.spec.whatwg.org/multipage/tables.html#attr-tdth-rowspan
-            rowspan = min(max(0, int(attrs.get('rowspan', '').strip() or 1)), 65534) or 65534 # limits from spec
-            colspan = min(max(1, int(attrs.get('colspan', '').strip() or 1)), 1000) # limits from spec
+            rowspan = min(max(0, _parse_span(attrs.get('rowspan', ''))), 65534) or 65534
+            colspan = min(max(1, _parse_span(attrs.get('colspan', ''))), 1000)
 
             for _ in range(colspan):
                 row.cells.append(cell)
